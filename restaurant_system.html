@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Restaurante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .environment-selector {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .env-button {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+        }
+
+        .env-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .env-button.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-color: #4CAF50;
+        }
+
+        .environment {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .environment.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            font-weight: bold;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status.pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.preparando {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.listo {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status.entregado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: white;
+        }
+
+        .menu-item:hover {
+            background: #f8f9fa;
+        }
+
+        .report-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-card h4 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification.success {
+            background: #27ae60;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+        }
+
+        .notification.info {
+            background: #3498db;
+        }
+
+        @media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header {
+        padding: 20px 10px;
+        margin-bottom: 20px;
+    }
+    
+    .header h1 {
+        font-size: 1.8em;
+    }
+    
+    .environment-selector {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .env-button {
+        width: 100%;
+        max-width: 280px;
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    .card h3 {
+        font-size: 1.1em;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .table {
+        font-size: 12px;
+    }
+    
+    .table th,
+    .table td {
+        padding: 8px 4px;
+    }
+    
+    .menu-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .menu-item > div:last-child {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 20px;
+    }
+    
+    .notification {
+        right: 10px;
+        left: 10px;
+        top: 10px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-card h4 {
+        font-size: 1.5em;
+    }
+    
+    /* Hacer tablas scrollables en móvil */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .header h1 {
+        font-size: 1.5em;
+    }
+    
+    .env-button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+}
+
+
+    </style>
+</head>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Sistema de Restaurante</h1>
+            <p>Gestión completa con entornos separados</p>
+        </div>
+
+        <div class="environment-selector">
+            <button class="env-button active" onclick="switchEnvironment('admin')">👨‍💼 Administración</button>
+            <button class="env-button" onclick="switchEnvironment('waiter')">🍽️ Mesero</button>
+            <button class="env-button" onclick="switchEnvironment('kitchen')">👨‍🍳 Cocina</button>
+            <button class="env-button" onclick="switchEnvironment('cashier')">💰 Caja</button>
+        </div>
+
+        <!-- ADMINISTRACIÓN -->
+        <div id="admin" class="environment active">
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h4 id="totalVentas">$0</h4>
+                    <p>Ventas del Día</p>
+                </div>
+                <div class="stat-card">
+                    <h4 id="totalOrdenes">0</h4>
+                    <p>Órdenes Completadas</p>
+                </div>
+                <div class="stat-card">
+                    <h4 id="totalClientes">0</h4>
+                    <p>Clientes Atendidos</p>
+                </div>
+                <div class="stat-card">
+                    <h4 id="mesasDisponibles">8</h4>
+                    <p>Mesas Disponibles</p>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>📋 Gestión de Menú</h3>
+                    <div class="form-group">
+                        <label>Nombre del Plato</label>
+                        <input type="text" id="platilloNombre" placeholder="Ej: Tacos al Pastor">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="number" id="platilloPrecio" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="platilloCategoria">
+                            <option value="entradas">Entradas</option>
+                            <option value="principales">Platos Principales</option>
+                            <option value="postres">Postres</option>
+                            <option value="bebidas">Bebidas</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="agregarPlatillo()">Agregar Platillo</button>
+                </div>
+
+                <div class="card">
+                    <h3>👥 Gestión de Personal</h3>
+                    <div class="form-group">
+                        <label>Nombre del Empleado</label>
+                        <input type="text" id="empleadoNombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Puesto</label>
+                        <select id="empleadoPuesto">
+                            <option value="mesero">Mesero</option>
+                            <option value="cocinero">Cocinero</option>
+                            <option value="cajero">Cajero</option>
+                            <option value="gerente">Gerente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Salario</label>
+                        <input type="number" id="empleadoSalario" placeholder="0.00" step="0.01">
+                    </div>
+                    <button class="btn btn-success" onclick="agregarEmpleado()">Agregar Empleado</button>
+                </div>
+
+                <div class="card">
+                    <h3>🍽️ Estado de Mesas</h3>
+                    <div id="mesasContainer">
+                        <!-- Las mesas se generarán dinámicamente -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Reportes</h3>
+                    <div class="form-group">
+                        <label>Tipo de Reporte</label>
+                        <select id="tipoReporte">
+                            <option value="ventas">Ventas Diarias</option>
+                            <option value="inventario">Inventario</option>
+                            <option value="empleados">Empleados</option>
+                            <option value="menu">Menú Completo</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-warning" onclick="generarReporte()">Generar Reporte</button>
+                    <button class="btn btn-primary" onclick="descargarReporte()">Descargar PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MESERO -->
+        <div id="waiter" class="environment">
+            <div class="grid">
+                <div class="card">
+                    <h3>🍽️ Nueva Orden</h3>
+                    <div class="form-group">
+                        <label>Mesa</label>
+                        <select id="mesaOrden">
+                            <option value="1">Mesa 1</option>
+                            <option value="2">Mesa 2</option>
+                            <option value="3">Mesa 3</option>
+                            <option value="4">Mesa 4</option>
+                            <option value="5">Mesa 5</option>
+                            <option value="6">Mesa 6</option>
+                            <option value="7">Mesa 7</option>
+                            <option value="8">Mesa 8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <input type="text" id="clienteNombre" placeholder="Nombre del cliente">
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="observaciones" placeholder="Notas especiales"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="crearOrden()">Crear Orden</button>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Menú Disponible</h3>
+                    <div id="menuMesero">
+                        <!-- El menú se cargará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Órdenes Activas</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Orden #</th>
+                            <th>Mesa</th>
+                            <th>Cliente</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordenesActivas">
+                        <!-- Las órdenes se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- COCINA -->
+        <div id="kitchen" class="environment">
+            <div class="grid">
+                <div class="card">
+                    <h3>🔥 Órdenes Pendientes</h3>
+                    <div id="ordenesPendientes">
+                        <!-- Las órdenes pendientes se mostrarán aquí -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>👨‍🍳 En Preparación</h3>
+                    <div id="ordenesPreparando">
+                        <!-- Las órdenes en preparación se mostrarán aquí -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>✅ Listas para Servir</h3>
+                    <div id="ordenesListas">
+                        <!-- Las órdenes listas se mostrarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAJA -->
+        <div id="cashier" class="environment">
+            <div class="grid">
+                <div class="card">
+                    <h3>💳 Procesar Pago</h3>
+                    <div class="form-group">
+                        <label>Orden #</label>
+                        <select id="ordenPago">
+                            <!-- Las órdenes listas se cargarán aquí -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="metodoPago">
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta">Tarjeta</option>
+                            <option value="transferencia">Transferencia</option>
+                        </select>
+                    </div>
+                  <div class="form-group">
+    <label>Monto Total</label>
+    <input type="number" id="montoPago" placeholder="0.00" step="0.01" readonly>
+</div>
+<div class="form-group">
+    <label>Pago del Cliente</label>
+    <input type="number" id="montoCliente" placeholder="0.00" step="0.01">
+</div>
+<div class="form-group">
+    <label>Cambio</label>
+    <input type="text" id="montoCambio" placeholder="$0.00" readonly>
+</div>
+
+
+
+
+
+                    <button class="btn btn-success" onclick="procesarPago()">Procesar Pago</button>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Resumen de Caja</h3>
+                    <div id="resumenCaja">
+                        <p><strong>Efectivo:</strong> $<span id="totalEfectivo">0.00</span></p>
+                        <p><strong>Tarjeta:</strong> $<span id="totalTarjeta">0.00</span></p>
+                        <p><strong>Transferencia:</strong> $<span id="totalTransferencia">0.00</span></p>
+                        <hr>
+                        <p><strong>Total del Día:</strong> $<span id="totalDia">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🧾 Historial de Pagos</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Orden #</th>
+                            <th>Método</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historialPagos">
+                        <!-- El historial se cargará dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para detalles de orden -->
+    <div id="modalOrden" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2>Detalles de la Orden</h2>
+            <div id="detallesOrden"></div>
+        </div>
+    </div>
+
+    <script>
+        // Datos globales del sistema
+        let menu = [
+            { id: 1, nombre: 'Tacos al Pastor', precio: 45.00, categoria: 'principales' },
+            { id: 2, nombre: 'Quesadillas', precio: 35.00, categoria: 'principales' },
+            { id: 3, nombre: 'Guacamole', precio: 25.00, categoria: 'entradas' },
+            { id: 4, nombre: 'Coca Cola', precio: 15.00, categoria: 'bebidas' },
+            { id: 5, nombre: 'Flan', precio: 20.00, categoria: 'postres' }
+        ];
+
+        let empleados = [
+            { id: 1, nombre: 'Juan Pérez', puesto: 'mesero', salario: 8000 },
+            { id: 2, nombre: 'María García', puesto: 'cocinero', salario: 10000 },
+            { id: 3, nombre: 'Carlos López', puesto: 'cajero', salario: 7500 }
+        ];
+
+        let ordenes = [];
+        let ventas = [];
+        let ordenActual = null;
+        let contadorOrden = 1;
+
+	// 1. AGREGAR ESTAS VARIABLES AL INICIO DEL SCRIPT (después de las variables globales existentes)
+	let isAdminAuthenticated = false;
+	const adminPassword = 'Admin123';
+
+        // Función para cambiar entre entornos
+        // 3. REEMPLAZAR LA FUNCIÓN switchEnvironment EXISTENTE CON ESTA NUEVA VERSIÓN
+	function switchEnvironment(env) {
+	    // Verificar autenticación para administración
+	    if (env === 'admin' && !isAdminAuthenticated) {
+	        if (!authenticateAdmin()) {
+	            return; // No cambiar si la autenticación falla
+	        }
+	    }
+    
+	    document.querySelectorAll('.environment').forEach(e => e.classList.remove('active'));
+	    document.querySelectorAll('.env-button').forEach(e => e.classList.remove('active'));
+    
+	    document.getElementById(env).classList.add('active');
+	    event.target.classList.add('active');
+    
+	    // Cargar datos específicos del entorno
+	    if (env === 'waiter') {
+	        cargarMenuMesero();
+	        cargarOrdenesActivas();
+	    } else if (env === 'kitchen') {
+	        cargarOrdenesCocina();
+	    } else if (env === 'cashier') {
+	        cargarOrdenesCaja();
+	        actualizarResumenCaja();
+	    } else if (env === 'admin') {
+	        actualizarDashboard();
+	        cargarMesas();
+	    }
+	}
+
+	function authenticateAdmin() {
+    const password = prompt('Ingrese la contraseña de administrador:');
+    
+    if (password === adminPassword) {
+        isAdminAuthenticated = true;
+        mostrarNotificacion('Acceso concedido', 'success');
+        return true;
+    } else {
+        mostrarNotificacion('Contraseña incorrecta', 'error');
+        return false;
+    }
+}
+
+        // Funciones de Administración
+        function agregarPlatillo() {
+            const nombre = document.getElementById('platilloNombre').value;
+            const precio = parseFloat(document.getElementById('platilloPrecio').value);
+            const categoria = document.getElementById('platilloCategoria').value;
+
+            if (!nombre || !precio) {
+                mostrarNotificacion('Por favor complete todos los campos', 'error');
+                return;
+            }
+
+            const nuevoId = Math.max(...menu.map(m => m.id), 0) + 1;
+            menu.push({ id: nuevoId, nombre, precio, categoria });
+            
+            document.getElementById('platilloNombre').value = '';
+            document.getElementById('platilloPrecio').value = '';
+            
+            mostrarNotificacion('Platillo agregado correctamente', 'success');
+            cargarMenuMesero();
+        }
+
+        function agregarEmpleado() {
+            const nombre = document.getElementById('empleadoNombre').value;
+            const puesto = document.getElementById('empleadoPuesto').value;
+            const salario = parseFloat(document.getElementById('empleadoSalario').value);
+
+            if (!nombre || !salario) {
+                mostrarNotificacion('Por favor complete todos los campos', 'error');
+                return;
+            }
+
+            const nuevoId = Math.max(...empleados.map(e => e.id), 0) + 1;
+            empleados.push({ id: nuevoId, nombre, puesto, salario });
+            
+            document.getElementById('empleadoNombre').value = '';
+            document.getElementById('empleadoSalario').value = '';
+            
+            mostrarNotificacion('Empleado agregado correctamente', 'success');
+        }
+
+        function cargarMesas() {
+            const container = document.getElementById('mesasContainer');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 8; i++) {
+                const mesaOcupada = ordenes.some(o => o.mesa == i && o.estado !== 'pagado');
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="menu-item">
+                        <span>Mesa ${i}</span>
+                        <span class="status ${mesaOcupada ? 'preparando' : 'listo'}">
+                            ${mesaOcupada ? 'Ocupada' : 'Libre'}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        // Funciones de Mesero
+        function cargarMenuMesero() {
+            const container = document.getElementById('menuMesero');
+            container.innerHTML = '';
+            
+            menu.forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="menu-item">
+                        <div>
+                            <strong>${item.nombre}</strong><br>
+                            <small>${item.categoria}</small>
+                        </div>
+                        <div>
+                            <span>$${item.precio.toFixed(2)}</span>
+                            <button class="btn btn-success" onclick="agregarAOrden(${item.id})">+</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function crearOrden() {
+            const mesa = document.getElementById('mesaOrden').value;
+            const cliente = document.getElementById('clienteNombre').value;
+            const observaciones = document.getElementById('observaciones').value;
+
+            if (!cliente) {
+                mostrarNotificacion('Por favor ingrese el nombre del cliente', 'error');
+                return;
+            }
+
+            ordenActual = {
+                id: contadorOrden++,
+                mesa: mesa,
+                cliente: cliente,
+                observaciones: observaciones,
+                items: [],
+                estado: 'pendiente',
+                fecha: new Date(),
+                total: 0
+            };
+
+            document.getElementById('clienteNombre').value = '';
+            document.getElementById('observaciones').value = '';
+            
+            mostrarNotificacion('Orden creada. Agregue platillos del menú.', 'success');
+        }
+
+        function agregarAOrden(itemId) {
+            if (!ordenActual) {
+                mostrarNotificacion('Primero debe crear una orden', 'error');
+                return;
+            }
+
+            const item = menu.find(m => m.id === itemId);
+            const existente = ordenActual.items.find(i => i.id === itemId);
+
+            if (existente) {
+                existente.cantidad++;
+            } else {
+                ordenActual.items.push({ ...item, cantidad: 1 });
+            }
+
+            ordenActual.total = ordenActual.items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            
+            mostrarNotificacion(`${item.nombre} agregado a la orden`, 'success');
+            
+            // Auto-guardar la orden
+            if (ordenActual.items.length > 0) {
+                const index = ordenes.findIndex(o => o.id === ordenActual.id);
+                if (index >= 0) {
+                    ordenes[index] = { ...ordenActual };
+                } else {
+                    ordenes.push({ ...ordenActual });
+                }
+                cargarOrdenesActivas();
+            }
+        }
+
+        function cargarOrdenesActivas() {
+            const tbody = document.getElementById('ordenesActivas');
+            tbody.innerHTML = '';
+            
+            ordenes.filter(o => o.estado !== 'pagado').forEach(orden => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${orden.id}</td>
+                    <td>${orden.mesa}</td>
+                    <td>${orden.cliente}</td>
+                    <td><span class="status ${orden.estado}">${orden.estado}</span></td>
+                    <td>$${orden.total.toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="verDetallesOrden(${orden.id})">Ver</button>
+                        <button class="btn btn-danger" onclick="cancelarOrden(${orden.id})">Cancelar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Funciones de Cocina
+        function cargarOrdenesCocina() {
+            cargarOrdenesPorEstado('pendiente', 'ordenesPendientes');
+            cargarOrdenesPorEstado('preparando', 'ordenesPreparando');
+            cargarOrdenesPorEstado('listo', 'ordenesListas');
+        }
+
+        function cargarOrdenesPorEstado(estado, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            ordenes.filter(o => o.estado === estado).forEach(orden => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="card" style="margin-bottom: 15px;">
+                        <h4>Orden #${orden.id} - Mesa ${orden.mesa}</h4>
+                        <p><strong>Cliente:</strong> ${orden.cliente}</p>
+                        <p><strong>Items:</strong> ${orden.items.map(i => `${i.nombre} (${i.cantidad})`).join(', ')}</p>
+                        <p><strong>Observaciones:</strong> ${orden.observaciones || 'Ninguna'}</p>
+                        <p><strong>Total:</strong> ${orden.total.toFixed(2)}</p>
+                        <div>
+                            ${estado === 'pendiente' ? `<button class="btn btn-warning" onclick="cambiarEstadoOrden(${orden.id}, 'preparando')">Iniciar Preparación</button>` : ''}
+                            ${estado === 'preparando' ? `<button class="btn btn-success" onclick="cambiarEstadoOrden(${orden.id}, 'listo')">Marcar como Listo</button>` : ''}
+                            ${estado === 'listo' ? `<button class="btn btn-primary" onclick="cambiarEstadoOrden(${orden.id}, 'entregado')">Entregar</button>` : ''}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function cambiarEstadoOrden(ordenId, nuevoEstado) {
+            const orden = ordenes.find(o => o.id === ordenId);
+            if (orden) {
+                orden.estado = nuevoEstado;
+                cargarOrdenesCocina();
+                cargarOrdenesActivas();
+                cargarOrdenesCaja();
+                mostrarNotificacion(`Orden #${ordenId} marcada como ${nuevoEstado}`, 'success');
+            }
+        }
+
+        // Funciones de Caja
+        function cargarOrdenesCaja() {
+            const select = document.getElementById('ordenPago');
+            select.innerHTML = '<option value="">Seleccione una orden</option>';
+            
+            ordenes.filter(o => o.estado === 'entregado').forEach(orden => {
+                const option = document.createElement('option');
+                option.value = orden.id;
+                option.textContent = `Orden #${orden.id} - Mesa ${orden.mesa} - ${orden.total.toFixed(2)}`;
+                select.appendChild(option);
+            });
+
+            // Actualizar monto cuando se selecciona una orden
+            select.addEventListener('change', function() {
+                const ordenId = parseInt(this.value);
+                const orden = ordenes.find(o => o.id === ordenId);
+                document.getElementById('montoPago').value = orden ? orden.total.toFixed(2) : '';
+            });
+        }
+
+        
+
+function procesarPago() {
+    const ordenId = parseInt(document.getElementById('ordenPago').value);
+    const metodoPago = document.getElementById('metodoPago').value;
+    const monto = parseFloat(document.getElementById('montoPago').value);
+    const montoCliente = parseFloat(document.getElementById('montoCliente').value);
+
+    if (!ordenId || !monto || !montoCliente || montoCliente < monto) {
+        mostrarNotificacion('Por favor verifique los valores de pago', 'error');
+        return;
+    }
+
+    const orden = ordenes.find(o => o.id === ordenId);
+    if (!orden) {
+        mostrarNotificacion('Orden no encontrada', 'error');
+        return;
+    }
+
+    const cambio = montoCliente - monto;
+    document.getElementById('montoCambio').value = `$${cambio.toFixed(2)}`;
+
+    // Registrar venta
+    const venta = {
+        id: Date.now(),
+        ordenId,
+        fecha: new Date(),
+        monto,
+        metodoPago,
+        mesa: orden.mesa,
+        cliente: orden.cliente,
+        cambio
+    };
+
+    ventas.push(venta);
+    orden.estado = 'pagado';
+
+    // Limpiar
+    document.getElementById('ordenPago').value = '';
+    document.getElementById('montoPago').value = '';
+    document.getElementById('montoCliente').value = '';
+    document.getElementById('montoCambio').value = '';
+
+    mostrarNotificacion('Pago procesado correctamente', 'success');
+    cargarOrdenesCaja();
+    actualizarResumenCaja();
+    cargarHistorialPagos();
+    actualizarDashboard();
+    cargarMesas();
+}
+
+
+
+
+
+
+
+
+        function actualizarResumenCaja() {
+            const hoy = new Date().toDateString();
+            const ventasHoy = ventas.filter(v => v.fecha.toDateString() === hoy);
+
+            const totalEfectivo = ventasHoy.filter(v => v.metodoPago === 'efectivo').reduce((sum, v) => sum + v.monto, 0);
+            const totalTarjeta = ventasHoy.filter(v => v.metodoPago === 'tarjeta').reduce((sum, v) => sum + v.monto, 0);
+            const totalTransferencia = ventasHoy.filter(v => v.metodoPago === 'transferencia').reduce((sum, v) => sum + v.monto, 0);
+
+            document.getElementById('totalEfectivo').textContent = totalEfectivo.toFixed(2);
+            document.getElementById('totalTarjeta').textContent = totalTarjeta.toFixed(2);
+            document.getElementById('totalTransferencia').textContent = totalTransferencia.toFixed(2);
+            document.getElementById('totalDia').textContent = (totalEfectivo + totalTarjeta + totalTransferencia).toFixed(2);
+        }
+
+        function cargarHistorialPagos() {
+            const tbody = document.getElementById('historialPagos');
+            tbody.innerHTML = '';
+            
+            ventas.slice(-10).reverse().forEach(venta => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${venta.fecha.toLocaleTimeString()}</td>
+                    <td>${venta.ordenId}</td>
+                    <td>${venta.metodoPago}</td>
+                    <td>${venta.monto.toFixed(2)}</td>
+                    <td><span class="status listo">Pagado</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Funciones de Dashboard
+        function actualizarDashboard() {
+            const hoy = new Date().toDateString();
+            const ventasHoy = ventas.filter(v => v.fecha.toDateString() === hoy);
+            
+            const totalVentas = ventasHoy.reduce((sum, v) => sum + v.monto, 0);
+            const totalOrdenes = ventasHoy.length;
+            const totalClientes = new Set(ventasHoy.map(v => v.cliente)).size;
+            const mesasDisponibles = 8 - ordenes.filter(o => o.estado !== 'pagado').length;
+
+            document.getElementById('totalVentas').textContent = `${totalVentas.toFixed(2)}`;
+            document.getElementById('totalOrdenes').textContent = totalOrdenes;
+            document.getElementById('totalClientes').textContent = totalClientes;
+            document.getElementById('mesasDisponibles').textContent = mesasDisponibles;
+        }
+
+        // Funciones de Reportes
+        function generarReporte() {
+            const tipo = document.getElementById('tipoReporte').value;
+            let reporte = '';
+
+            switch(tipo) {
+                case 'ventas':
+                    reporte = generarReporteVentas();
+                    break;
+                case 'inventario':
+                    reporte = generarReporteInventario();
+                    break;
+                case 'empleados':
+                    reporte = generarReporteEmpleados();
+                    break;
+                case 'menu':
+                    reporte = generarReporteMenu();
+                    break;
+            }
+
+            mostrarReporteModal(reporte);
+        }
+
+        function generarReporteVentas() {
+            const hoy = new Date().toDateString();
+            const ventasHoy = ventas.filter(v => v.fecha.toDateString() === hoy);
+            
+            let reporte = `
+                <h3>📊 Reporte de Ventas Diarias</h3>
+                <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+                <p><strong>Total de Ventas:</strong> ${ventasHoy.reduce((sum, v) => sum + v.monto, 0).toFixed(2)}</p>
+                <p><strong>Número de Órdenes:</strong> ${ventasHoy.length}</p>
+                <p><strong>Ticket Promedio:</strong> ${ventasHoy.length > 0 ? (ventasHoy.reduce((sum, v) => sum + v.monto, 0) / ventasHoy.length).toFixed(2) : '0.00'}</p>
+                <hr>
+                <h4>Detalle por Método de Pago:</h4>
+                <ul>
+                    <li>Efectivo: ${ventasHoy.filter(v => v.metodoPago === 'efectivo').reduce((sum, v) => sum + v.monto, 0).toFixed(2)}</li>
+                    <li>Tarjeta: ${ventasHoy.filter(v => v.metodoPago === 'tarjeta').reduce((sum, v) => sum + v.monto, 0).toFixed(2)}</li>
+                    <li>Transferencia: ${ventasHoy.filter(v => v.metodoPago === 'transferencia').reduce((sum, v) => sum + v.monto, 0).toFixed(2)}</li>
+                </ul>
+            `;
+            
+            return reporte;
+        }
+
+        function generarReporteInventario() {
+            const platillosVendidos = {};
+            
+            ordenes.forEach(orden => {
+                orden.items.forEach(item => {
+                    if (platillosVendidos[item.nombre]) {
+                        platillosVendidos[item.nombre] += item.cantidad;
+                    } else {
+                        platillosVendidos[item.nombre] = item.cantidad;
+                    }
+                });
+            });
+
+            let reporte = `
+                <h3>📦 Reporte de Inventario</h3>
+                <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+                <h4>Platillos Más Vendidos:</h4>
+                <ul>
+            `;
+
+            Object.entries(platillosVendidos).forEach(([nombre, cantidad]) => {
+                reporte += `<li>${nombre}: ${cantidad} unidades</li>`;
+            });
+
+            reporte += '</ul>';
+            return reporte;
+        }
+
+        function generarReporteEmpleados() {
+            let reporte = `
+                <h3>👥 Reporte de Empleados</h3>
+                <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+                <p><strong>Total de Empleados:</strong> ${empleados.length}</p>
+                <hr>
+                <h4>Lista de Empleados:</h4>
+                <ul>
+            `;
+
+            empleados.forEach(emp => {
+                reporte += `<li><strong>${emp.nombre}</strong> - ${emp.puesto} - ${emp.salario.toFixed(2)}</li>`;
+            });
+
+            reporte += '</ul>';
+            return reporte;
+        }
+
+        function generarReporteMenu() {
+            let reporte = `
+                <h3>📋 Reporte de Menú</h3>
+                <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+                <p><strong>Total de Platillos:</strong> ${menu.length}</p>
+                <hr>
+            `;
+
+            const categorias = ['entradas', 'principales', 'postres', 'bebidas'];
+            categorias.forEach(categoria => {
+                const platillos = menu.filter(m => m.categoria === categoria);
+                if (platillos.length > 0) {
+                    reporte += `<h4>${categoria.charAt(0).toUpperCase() + categoria.slice(1)}:</h4><ul>`;
+                    platillos.forEach(platillo => {
+                        reporte += `<li>${platillo.nombre} - ${platillo.precio.toFixed(2)}</li>`;
+                    });
+                    reporte += '</ul>';
+                }
+            });
+
+            return reporte;
+        }
+
+        function mostrarReporteModal(contenido) {
+            document.getElementById('detallesOrden').innerHTML = contenido;
+            document.getElementById('modalOrden').style.display = 'block';
+        }
+
+        
+function descargarReporte() {
+    const tipo = document.getElementById('tipoReporte').value;
+    let contenido = '';
+
+    switch (tipo) {
+        case 'ventas':
+            contenido = generarReporteVentasTexto();
+            break;
+        case 'inventario':
+            contenido = generarReporteInventarioTexto();
+            break;
+        case 'empleados':
+            contenido = generarReporteEmpleadosTexto();
+            break;
+        case 'menu':
+            contenido = generarReporteMenuTexto();
+            break;
+    }
+
+    // Usar jsPDF para generar el archivo PDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const lines = contenido.trim().split('\n');
+    let y = 10; // Posición inicial en el eje Y
+
+    lines.forEach((line, i) => {
+        doc.text(line.trim(), 10, y);
+        y += 7;
+        if (y > 280) {
+            doc.addPage();
+            y = 10;
+        }
+    });
+
+    const fecha = new Date().toISOString().split('T')[0];
+    doc.save(`reporte_${tipo}_${fecha}.pdf`);
+    mostrarNotificacion('Reporte PDF descargado correctamente', 'success');
+}
+
+       
+
+
+function generarReporteVentasTexto() {
+    const hoy = new Date().toDateString();
+    const ventasHoy = ventas.filter(v => v.fecha.toDateString() === hoy);
+    const ordenesHoy = ordenes.filter(o => o.fecha.toDateString() === hoy && o.estado === 'pagado');
+
+    let reporte = `
+REPORTE DETALLADO DE VENTAS
+============================
+Fecha: ${new Date().toLocaleDateString()}
+Total de Ventas: ${ventasHoy.reduce((sum, v) => sum + v.monto, 0).toFixed(2)}
+Número de Órdenes: ${ventasHoy.length}
+Ticket Promedio: ${ventasHoy.length > 0 ? (ventasHoy.reduce((sum, v) => sum + v.monto, 0) / ventasHoy.length).toFixed(2) : '0.00'}
+
+DETALLE POR ORDEN:
+`;
+
+    ordenesHoy.forEach(orden => {
+        reporte += `
+Orden #${orden.id} - Mesa ${orden.mesa}
+Cliente: ${orden.cliente}
+Items:
+${orden.items.map(item => `  - ${item.nombre} x${item.cantidad} ($${item.precio.toFixed(2)} c/u)`).join('\n')}
+Total Orden: $${orden.total.toFixed(2)}
+--------------------
+`;
+    });
+
+    return reporte;
+}
+
+
+
+
+
+
+        function generarReporteInventarioTexto() {
+            const platillosVendidos = {};
+            
+            ordenes.forEach(orden => {
+                orden.items.forEach(item => {
+                    if (platillosVendidos[item.nombre]) {
+                        platillosVendidos[item.nombre] += item.cantidad;
+                    } else {
+                        platillosVendidos[item.nombre] = item.cantidad;
+                    }
+                });
+            });
+
+            let reporte = `
+REPORTE DE INVENTARIO
+====================
+Fecha: ${new Date().toLocaleDateString()}
+
+PLATILLOS MÁS VENDIDOS:
+`;
+
+            Object.entries(platillosVendidos).forEach(([nombre, cantidad]) => {
+                reporte += `- ${nombre}: ${cantidad} unidades\n`;
+            });
+
+            return reporte;
+        }
+
+        function generarReporteEmpleadosTexto() {
+            let reporte = `
+REPORTE DE EMPLEADOS
+===================
+Fecha: ${new Date().toLocaleDateString()}
+Total de Empleados: ${empleados.length}
+
+LISTA DE EMPLEADOS:
+`;
+
+            empleados.forEach(emp => {
+                reporte += `- ${emp.nombre} - ${emp.puesto} - ${emp.salario.toFixed(2)}\n`;
+            });
+
+            return reporte;
+        }
+
+        function generarReporteMenuTexto() {
+            let reporte = `
+REPORTE DE MENÚ
+===============
+Fecha: ${new Date().toLocaleDateString()}
+Total de Platillos: ${menu.length}
+
+`;
+
+            const categorias = ['entradas', 'principales', 'postres', 'bebidas'];
+            categorias.forEach(categoria => {
+                const platillos = menu.filter(m => m.categoria === categoria);
+                if (platillos.length > 0) {
+                    reporte += `${categoria.toUpperCase()}:\n`;
+                    platillos.forEach(platillo => {
+                        reporte += `- ${platillo.nombre} - ${platillo.precio.toFixed(2)}\n`;
+                    });
+                    reporte += '\n';
+                }
+            });
+
+            return reporte;
+        }
+
+        // Funciones de utilidad
+        function verDetallesOrden(ordenId) {
+            const orden = ordenes.find(o => o.id === ordenId);
+            if (!orden) return;
+
+            let detalles = `
+                <h3>Orden #${orden.id}</h3>
+                <p><strong>Mesa:</strong> ${orden.mesa}</p>
+                <p><strong>Cliente:</strong> ${orden.cliente}</p>
+                <p><strong>Estado:</strong> ${orden.estado}</p>
+                <p><strong>Fecha:</strong> ${orden.fecha.toLocaleString()}</p>
+                <p><strong>Observaciones:</strong> ${orden.observaciones || 'Ninguna'}</p>
+                <hr>
+                <h4>Items:</h4>
+                <ul>
+            `;
+
+            orden.items.forEach(item => {
+                detalles += `<li>${item.nombre} x${item.cantidad} - ${(item.precio * item.cantidad).toFixed(2)}</li>`;
+            });
+
+            detalles += `</ul><hr><p><strong>Total:</strong> ${orden.total.toFixed(2)}</p>`;
+
+            document.getElementById('detallesOrden').innerHTML = detalles;
+            document.getElementById('modalOrden').style.display = 'block';
+        }
+
+        function cancelarOrden(ordenId) {
+            if (confirm('¿Está seguro de que desea cancelar esta orden?')) {
+                const index = ordenes.findIndex(o => o.id === ordenId);
+                if (index >= 0) {
+                    ordenes.splice(index, 1);
+                    cargarOrdenesActivas();
+                    cargarOrdenesCocina();
+                    mostrarNotificacion('Orden cancelada correctamente', 'success');
+                }
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalOrden').style.display = 'none';
+        }
+
+        function mostrarNotificacion(mensaje, tipo) {
+            const notificacion = document.createElement('div');
+            notificacion.className = `notification ${tipo}`;
+            notificacion.textContent = mensaje;
+            
+            document.body.appendChild(notificacion);
+            
+            setTimeout(() => {
+                notificacion.remove();
+            }, 3000);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarMenuMesero();
+            actualizarDashboard();
+            cargarMesas();
+            
+            // Cerrar modal al hacer clic fuera
+            window.onclick = function(event) {
+                const modal = document.getElementById('modalOrden');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // ... código ya existente ...
+
+    // 👉 Lógica para calcular el cambio automáticamente
+    const montoClienteInput = document.getElementById('montoCliente');
+    const montoPagoInput = document.getElementById('montoPago');
+    const montoCambioInput = document.getElementById('montoCambio');
+
+    montoClienteInput.addEventListener('input', function () {
+        const total = parseFloat(montoPagoInput.value);
+        const entregado = parseFloat(montoClienteInput.value);
+        
+        if (!isNaN(total) && !isNaN(entregado)) {
+            const cambio = entregado - total;
+            montoCambioInput.value = cambio >= 0 ? `$${cambio.toFixed(2)}` : `$0.00`;
+        } else {
+            montoCambioInput.value = `$0.00`;
+        }
+    });
+});
+
+
+
+
+    </script>
+</body>
+</html>
