@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Restaurante</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 300px;
+            text-align: center;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>🔒 Iniciar Sesión</h2>
+    <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" id="usuario">
+    </div>
+    <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="password">
+    </div>
+    <button onclick="login()">Ingresar</button>
+    <p id="error" class="error"></p>
+</div>
+
+<script>
+    const USER = "admin";
+    const PASS = "Admin123";
+
+    function login() {
+        const usuario = document.getElementById("usuario").value;
+        const password = document.getElementById("password").value;
+        const errorMsg = document.getElementById("error");
+
+        if (usuario === USER && password === PASS) {
+            errorMsg.textContent = "";
+            window.location.href = "Index.html"; // Reemplaza por la ruta de tu sistema
+        } else {
+            errorMsg.textContent = "Credenciales incorrectas. Intenta nuevamente.";
+        }
+    }
+</script>
+
+</body>
+</html>
