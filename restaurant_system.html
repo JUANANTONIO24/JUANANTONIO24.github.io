@@ -483,6 +483,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <body>
+	<div style="text-align: right; margin: 20px;">
+        <button onclick="logout()">Cerrar Sesión</button>
+    </div>
+
+    <!-- Contenido del sistema -->
+
+    <script>
+        function logout() {
+            sessionStorage.removeItem("autenticado");
+            window.location.href = "index.html"; // Regresa al login
+        }
+    </script>
+	
     <div class="container">
         <div class="header">
             <h1>🍽️ Sistema de Restaurante</h1>
