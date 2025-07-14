@@ -504,6 +504,48 @@
             window.location.href = "index.html"; // Regresa al login
         }
     </script>
+
+	
+	
+	<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+ const firebaseConfig = {
+    apiKey: "AIzaSyDa27zy5Ad8w-0pqHwdpNfgIxcfHEM4nAg",
+    authDomain: "restaurante-pedidos-bc5d3.firebaseapp.com",
+    databaseURL: "https://restaurante-pedidos-bc5d3-default-rtdb.firebaseio.com",
+    projectId: "restaurante-pedidos-bc5d3",
+    storageBucket: "restaurante-pedidos-bc5d3.firebasestorage.app",
+    messagingSenderId: "955357929852",
+    appId: "1:955357929852:web:2f198eebabcbbee055c4f9",
+    measurementId: "G-1744KXF8LP"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+	 // 🔄 Leer pedidos en tiempo real
+    const pedidosRef = db.ref("pedidos");
+    pedidosRef.on("child_added", snapshot => {
+      const mesa = snapshot.key;
+      snapshot.forEach(pedidoSnap => {
+        const pedido = pedidoSnap.val();
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <strong>Mesa ${mesa}</strong><br>
+          Producto: ${pedido.producto}<br>
+          Notas: ${pedido.notas}<br>
+          Estado: ${pedido.estado}<br>
+          <hr>
+        `;
+        document.getElementById("listaPedidos").appendChild(div);
+      });
+    });
+</script>
+
+
+	
 	
     <div class="container">
         <div class="header">
