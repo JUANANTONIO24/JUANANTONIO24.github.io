@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+	<script>
+ 	 const autenticado = sessionStorage.getItem("autenticado");
+ 	 if (!autenticado) {
+   	 window.location.href = "login.html"; // 🚫 Redirige si no ha iniciado sesión
+ 	 }
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
