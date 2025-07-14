@@ -88,8 +88,9 @@
         const errorMsg = document.getElementById("error");
 
         if (usuario === USER && password === PASS) {
-            errorMsg.textContent = "";
-            window.location.href = "restaurant_system.html"; // Reemplaza por la ruta de tu sistema
+        errorMsg.textContent = "";
+        sessionStorage.setItem("autenticado", "true"); // 🔐 Guardamos estado de login
+        window.location.href = "restaurant_system.html";
         } else {
             errorMsg.textContent = "Credenciales incorrectas. Intenta nuevamente.";
         }
