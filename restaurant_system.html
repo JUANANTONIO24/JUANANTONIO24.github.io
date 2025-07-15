@@ -488,14 +488,14 @@
 
     </style>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
 
 	
 </head>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
 
 <body>
 	<div style="text-align: right; margin: 20px;">
@@ -824,13 +824,17 @@
   };
 
   // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+ const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 	    
 
         // Función para cambiar entre entornos
         // 3. REEMPLAZAR LA FUNCIÓN switchEnvironment EXISTENTE CON ESTA NUEVA VERSIÓN
 	function switchEnvironment(env) {
+
+		if (env === 'kitchen') {
+  escucharOrdenesFirebase();
+}
 	    // Verificar autenticación para administración
 	    if (env === 'admin' && !isAdminAuthenticated) {
 	        if (!authenticateAdmin()) {
@@ -996,13 +1000,15 @@
                 ordenActual.items.push({ ...item, cantidad: 1 });
             }
 
+		function guardarOrdenFirebase(orden) {
+  db.ref("ordenes/" + orden.id).set(orden);
+}
+
             ordenActual.total = ordenActual.items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
             
             mostrarNotificacion(`${item.nombre} agregado a la orden`, 'success');
 
-		function guardarOrdenFirebase(orden) {
-  		db.ref("ordenes/" + orden.id).set(orden);
-		}
+		
             
             // Auto-guardar la orden
             if (ordenActual.items.length > 0) {
@@ -1012,9 +1018,12 @@
                 } else {
                     ordenes.push({ ...ordenActual });
                 }
-                cargarOrdenesActivas();
 
 		    guardarOrdenFirebase(ordenActual);
+		    
+                cargarOrdenesActivas();
+
+		    
             }
         }
 
@@ -1091,6 +1100,8 @@ function escucharOrdenesFirebase() {
                 cargarOrdenesActivas();
                 cargarOrdenesCaja();
                 mostrarNotificacion(`Orden #${ordenId} marcada como ${nuevoEstado}`, 'success');
+		    guardarOrdenFirebase(orden); // 🔄 También guarda el nuevo estado en Firebase
+
             }
         }
 
