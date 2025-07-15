@@ -487,6 +487,12 @@
 
 
     </style>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
+
+	
 </head>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -805,6 +811,23 @@
 	let isAdminAuthenticated = false;
 	const adminPassword = 'Admin123';
 
+
+	    const firebaseConfig = {
+    apiKey: "AIzaSyDa27zy5Ad8w-0pqHwdpNfgIxcfHEM4nAg",
+    authDomain: "restaurante-pedidos-bc5d3.firebaseapp.com",
+    databaseURL: "https://restaurante-pedidos-bc5d3-default-rtdb.firebaseio.com",
+    projectId: "restaurante-pedidos-bc5d3",
+    storageBucket: "restaurante-pedidos-bc5d3.firebasestorage.app",
+    messagingSenderId: "955357929852",
+    appId: "1:955357929852:web:2f198eebabcbbee055c4f9",
+    measurementId: "G-1744KXF8LP"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+	    
+
         // Función para cambiar entre entornos
         // 3. REEMPLAZAR LA FUNCIÓN switchEnvironment EXISTENTE CON ESTA NUEVA VERSIÓN
 	function switchEnvironment(env) {
@@ -976,6 +999,10 @@
             ordenActual.total = ordenActual.items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
             
             mostrarNotificacion(`${item.nombre} agregado a la orden`, 'success');
+
+		function guardarOrdenFirebase(orden) {
+  		db.ref("ordenes/" + orden.id).set(orden);
+		}
             
             // Auto-guardar la orden
             if (ordenActual.items.length > 0) {
@@ -986,6 +1013,8 @@
                     ordenes.push({ ...ordenActual });
                 }
                 cargarOrdenesActivas();
+
+		    guardarOrdenFirebase(ordenActual);
             }
         }
 
@@ -1012,11 +1041,24 @@
 
         // Funciones de Cocina
         function cargarOrdenesCocina() {
+		
+		if (env === 'kitchen') {
+  escucharOrdenesFirebase();
+}
+
+		
             cargarOrdenesPorEstado('pendiente', 'ordenesPendientes');
             cargarOrdenesPorEstado('preparando', 'ordenesPreparando');
             cargarOrdenesPorEstado('listo', 'ordenesListas');
         }
 
+function escucharOrdenesFirebase() {
+  db.ref("ordenes").on("child_added", snapshot => {
+    const orden = snapshot.val();
+    mostrarOrdenEnCocina(orden); // Reemplaza con tu lógica existente
+  });
+}
+	    
         function cargarOrdenesPorEstado(estado, containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
