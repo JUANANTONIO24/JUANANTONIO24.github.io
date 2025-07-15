@@ -688,6 +688,73 @@
 
   <!-- Entorno Caja -->
   <div id="cashier" class="environment">
+      <div class="grid">
+                <div class="card">
+                    <h3>💳 Procesar Pago</h3>
+                    <div class="form-group">
+                        <label>Orden #</label>
+                        <select id="ordenPago">
+                            <!-- Las órdenes listas se cargarán aquí -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Método de Pago</label>
+                        <select id="metodoPago">
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta">Tarjeta</option>
+                            <option value="transferencia">Transferencia</option>
+                        </select>
+                    </div>
+                  <div class="form-group">
+    <label>Monto Total</label>
+    <input type="number" id="montoPago" placeholder="0.00" step="0.01" readonly>
+</div>
+<div class="form-group">
+    <label>Pago del Cliente</label>
+    <input type="number" id="montoCliente" placeholder="0.00" step="0.01">
+</div>
+<div class="form-group">
+    <label>Cambio</label>
+    <input type="text" id="montoCambio" placeholder="$0.00" readonly>
+</div>
+
+
+
+
+
+                    <button class="btn btn-success" onclick="procesarPago()">Procesar Pago</button>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Resumen de Caja</h3>
+                    <div id="resumenCaja">
+                        <p><strong>Efectivo:</strong> $<span id="totalEfectivo">0.00</span></p>
+                        <p><strong>Tarjeta:</strong> $<span id="totalTarjeta">0.00</span></p>
+                        <p><strong>Transferencia:</strong> $<span id="totalTransferencia">0.00</span></p>
+                        <hr>
+                        <p><strong>Total del Día:</strong> $<span id="totalDia">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🧾 Historial de Pagos</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Orden #</th>
+                            <th>Método</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historialPagos">
+                        <!-- El historial se cargará dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     <!-- Procesar Pago y Resumen de Caja -->
   </div>
 
