@@ -494,8 +494,22 @@
   <div style="text-align:right; margin:20px;">
     <button onclick="logout()">Cerrar Sesión</button>
   </div>
+<!-- Contenido del sistema -->
 
+    <script>
+        function logout() {
+            sessionStorage.removeItem("autenticado");
+            window.location.href = "index.html"; // Regresa al login
+        }
+    </script>
   <!-- Selector de entornos -->
+    	
+    <div class="container">
+        <div class="header">
+            <h1>🍔 HAMBURGUESAS CUAYUCA</h1>
+            
+        </div>
+        
   <div class="environment-selector">
     <button class="env-button active" onclick="switchEnvironment('admin')">👨‍💼 Administración</button>
     <button class="env-button" onclick="switchEnvironment('waiter')">🍽️ Mesero</button>
