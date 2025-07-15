@@ -610,7 +610,62 @@
 
   <!-- Entorno Mesero -->
   <div id="waiter" class="environment">
-    <!-- Nueva Orden y Órdenes Activas -->
+    <div class="grid">
+                <div class="card">
+                    <h3>🍽️ Nueva Orden</h3>
+                    <div class="form-group">
+                        <label>Mesa</label>
+                        <select id="mesaOrden">
+                            <option value="1">Mesa 1</option>
+                            <option value="2">Mesa 2</option>
+                            <option value="3">Mesa 3</option>
+                            <option value="4">Mesa 4</option>
+                            <option value="5">Mesa 5</option>
+                            <option value="6">Mesa 1 de afuera</option>
+                            <option value="7">Mesa 2 de afuera</option>
+                            <option value="8">Mesa 3 de afuera</option>
+                            <option value="9">Mesa 1 de tienda</option>
+                            <option value="10">Mesa 2 de tienda</option>
+                            <option value="11">Para llevar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <input type="text" id="clienteNombre" placeholder="Nombre del cliente">
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="observaciones" placeholder="Notas especiales"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="crearOrden()">Crear Orden</button>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Menú Disponible</h3>
+                    <div id="menuMesero">
+                        <!-- El menú se cargará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Órdenes Activas</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Orden #</th>
+                            <th>Mesa</th>
+                            <th>Cliente</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordenesActivas">
+                        <!-- Las órdenes se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
   </div>
 
   <!-- Entorno Cocina -->
