@@ -767,6 +767,8 @@
   </div>
 
   <script>
+      let isAdminAuthenticated = false;
+    const adminPassword = 'Admin123';
     // --- Sesión ---
     function logout() {
       sessionStorage.removeItem("autenticado");
@@ -774,15 +776,21 @@
     }
 
     // --- Globales ---
-    let menu = [ /* ... */ ];
-    let empleados = [ /* ... */ ];
+    let menu = [{ id: 1, nombre: 'Tacos al Pastor', precio: 45.00, categoria: 'principales' },
+            { id: 2, nombre: 'Quesadillas', precio: 35.00, categoria: 'principales' },
+            { id: 3, nombre: 'Guacamole', precio: 25.00, categoria: 'entradas' },
+            { id: 4, nombre: 'Coca Cola', precio: 15.00, categoria: 'bebidas' },
+            { id: 5, nombre: 'Flan', precio: 20.00, categoria: 'postres' }];
+    let empleados = [
+            { id: 1, nombre: 'Juan Pérez', puesto: 'mesero', salario: 8000 },
+            { id: 2, nombre: 'María García', puesto: 'cocinero', salario: 10000 },
+            { id: 3, nombre: 'Carlos López', puesto: 'cajero', salario: 7500 }];
     let ordenes = [];
     let ventas = [];
     let ordenActual = null;
     let contadorOrden = 1;
 
-    let isAdminAuthenticated = false;
-    const adminPassword = 'Admin123';
+    
 
     // --- Firebase Init ---
     const firebaseConfig = {
