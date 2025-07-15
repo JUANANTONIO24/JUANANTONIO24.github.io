@@ -538,6 +538,75 @@
                 </div>
     <!-- Dashboard, gestión de menú, etc. (igual a tu código) -->
   </div>
+      
+            <div class="grid">
+                <div class="card">
+                    <h3>📋 Gestión de Menú</h3>
+                    <div class="form-group">
+                        <label>Nombre del Plato</label>
+                        <input type="text" id="platilloNombre" placeholder="Ej: Tacos al Pastor">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="number" id="platilloPrecio" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="platilloCategoria">
+                            <option value="entradas">Entradas</option>
+                            <option value="principales">Platos Principales</option>
+                            <option value="postres">Postres</option>
+                            <option value="bebidas">Bebidas</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="agregarPlatillo()">Agregar Platillo</button>
+                </div>
+
+                <div class="card">
+                    <h3>👥 Gestión de Personal</h3>
+                    <div class="form-group">
+                        <label>Nombre del Empleado</label>
+                        <input type="text" id="empleadoNombre" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label>Puesto</label>
+                        <select id="empleadoPuesto">
+                            <option value="mesero">Mesero</option>
+                            <option value="cocinero">Cocinero</option>
+                            <option value="cajero">Cajero</option>
+                            <option value="gerente">Gerente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Salario</label>
+                        <input type="number" id="empleadoSalario" placeholder="0.00" step="0.01">
+                    </div>
+                    <button class="btn btn-success" onclick="agregarEmpleado()">Agregar Empleado</button>
+                </div>
+
+                <div class="card">
+                    <h3>🍽️ Estado de Mesas</h3>
+                    <div id="mesasContainer">
+                        <!-- Las mesas se generarán dinámicamente -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Reportes</h3>
+                    <div class="form-group">
+                        <label>Tipo de Reporte</label>
+                        <select id="tipoReporte">
+                            <option value="ventas">Ventas Diarias</option>
+                            <option value="inventario">Inventario</option>
+                            <option value="empleados">Empleados</option>
+                            <option value="menu">Menú Completo</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-warning" onclick="generarReporte()">Generar Reporte</button>
+                    <button class="btn btn-primary" onclick="descargarReporte()">Descargar PDF</button>
+                </div>
+            </div>
+        </div>
 
   <!-- Entorno Mesero -->
   <div id="waiter" class="environment">
