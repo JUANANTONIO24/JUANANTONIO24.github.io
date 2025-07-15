@@ -1062,9 +1062,17 @@ const db = firebase.database();
         }
 
 function escucharOrdenesFirebase() {
-  db.ref("ordenes").on("child_added", snapshot => {
-    const orden = snapshot.val();
-    mostrarOrdenEnCocina(orden); // Reemplaza con tu lógica existente
+  db.ref("ordenes").on("value", snapshot => {
+    const data = snapshot.val();
+    ordenes = []; // 🔄 Limpiar primero
+
+    for (const id in data) {
+      if (data.hasOwnProperty(id)) {
+        ordenes.push(data[id]);
+      }
+    }
+
+    cargarOrdenesCocina(); // 🔁 Actualizar cocina después de cargar
   });
 }
 	    
